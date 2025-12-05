@@ -184,7 +184,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             class="img-circle elevation-2" alt="User Image">
                     </div>
                     <div class="info">
-                        <a href="#" class="d-block">Alexander Pierce</a>
+                        <a href="#" class="d-block">{{ Auth::user()->name }}</a>
                     </div>
                 </div>
 
@@ -239,6 +239,28 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 </p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <div class="user-panel mt-3 pb-3 mb-3">
+                                <a href="{{route('logout')}}" onclick="event.preventDefault();
+                                    document.getElementById('logout').submit();">Logout</a>
+                                <form action="{{ route('logout') }}" method="post" id="logout" style="display: none">
+                                    @csrf
+                                </form>
+                            </div>
+                        </li>
+
+                        {{-- <li class="nav-item">
+                            <!-- Authentication -->
+
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+
+                                <x-dropdown-link :href="route('logout')" onclick="event.preventDefault();
+                                                                            this.closest('form').submit();">
+                                    {{ __('Log Out') }}
+                                </x-dropdown-link>
+                            </form>
+                        </li> --}}
                     </ul>
                 </nav>
                 <!-- /.sidebar-menu -->

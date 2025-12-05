@@ -1,26 +1,22 @@
 @props([
+'id' => '',
 'label',
-'id',
 'name',
 'selected' => '',
 'options' => []
 ])
 
+@if (isset($label))
 <label for="{{$id}}">{{$label}}</label>
+@endif
 
-<select {{-- {{ $attributes }} --}} id="{{$id}}" name="{{$name}}" {{-- class="form-control" --}} {{
-    $attributes->class(['form-control', 'is-invalid' => $errors->has($name)]) }} >
-    <option value="">No</option>
+<select id="{{$id}}" name="{{$name}}" {{ $attributes->class(['form-control', 'is-invalid' => $errors->has($name)]) }} >
+    <option></option>
     @foreach ($options as $value => $text)
-    <option value="{{ $value }}" @if ($value==old($name, $selected)) selected @endif>{{ $text }}</option>
+    <option value="{{ $value }}" @if($value==old($name, $selected)) selected @endif>{{ $text }}</option>
     @endforeach
 </select>
 
-{{-- @if ($errors->has('name'))
-<p class="text-danger">{{ $errors->first('name') }}</p>
-@endif --}}
-
 @error($name)
-{{-- <p class="text-danger">{{ $errors->first($name) }}</p> --}}
 <p class="ivalid-feedback">{{ $message }}</p>
 @enderror

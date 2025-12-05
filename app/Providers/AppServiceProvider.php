@@ -29,5 +29,7 @@ class AppServiceProvider extends ServiceProvider
         }, 'Invalid god word is not allowed.');
 
         Paginator::useBootstrap();
+        // Paginator::useTailwind();
+        // Paginator::defaultView('vendor.pagination.tailwind');
     }
 }

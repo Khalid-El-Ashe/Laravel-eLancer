@@ -1,17 +1,19 @@
 @props([
 'label',
 'type' => 'text',
-'id',
+'id' => '',
 'name',
 'value' => ''
 ])
 
+@if (isset($label))
 <label for="{{$id}}">{{$label}}</label>
+@endif
 
-<input {{-- {{ $attributes }} --}} type="{{ $type {{-- ?? 'text' --}} }}" id="{{$id}}" name="{{$name}}"
-    value="{{ old($name, $value) }}" {{-- class="form-control" --}}
-    {{ $attributes->class(['form-control', 'is-invalid' => $errors->has($name)]) }}
-    >
+<input {{-- {{ $attributes }} --}} type="{{ $type  ?? 'text' }}" id="{{$id}}" name="{{$name}}"
+    value="{{ old($name, $value) }}" {{-- class="form-control" --}} {{ $attributes->class(['form-control', 'is-invalid'
+=> $errors->has($name)]) }}
+>
 
 {{-- @if ($errors->has('name'))
 <p class="text-danger">{{ $errors->first('name') }}</p>

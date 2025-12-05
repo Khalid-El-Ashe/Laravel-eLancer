@@ -17,4 +17,34 @@ class Category extends Model
         'created_at',
         'updated_at',
     ];
+
+    /**
+     * now i need to make a relation
+     * ONE - TO - MANY for project
+     */
+    public function project()
+    {
+        return $this->hasMany(Project::class, 'category_id', 'id');
+    }
+
+    /**
+     * i need make another relation that is from category to category(parent_id)
+     *
+     */
+    public function children()
+    {
+        return $this->hasMany(Category::class, 'parent_id', 'id');
+    }
+
+    /**
+     *
+     * علاقة عكسة لنفس الجدول
+     * @return void
+     */
+    public function parent()
+    {
+        return $this->belongsTo(Category::class, 'parent_id', 'id')->withDefault([
+            'name' => 'no parent'
+        ]); //todo the function withDefault() -> is using with relation belongsTo and hasOne
+    }
 }

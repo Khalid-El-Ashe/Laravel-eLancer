@@ -3,12 +3,14 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -42,4 +44,25 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    /**
+     * now i need add the relation is contact with Freelancer Table
+     * The User is Has One FreelancerProfile(Freelancer)
+     * ONE - TO - ONE Relation
+     */
+    public function freelancer()
+    {
+        //todo the secound parameter is Optional The Laravel now what the column when the Model Class Added
+        return $this->hasOne(Freelancer::class, 'user_id', 'id')->withDefault();
+    }
+
+    /**
+     * now i need add the relation is contact with Project Table
+     * The User is Has Many Projects
+     * ONE - TO - MANY Relation
+     */
+    public function projects()
+    {
+        return $this->hasMany(Project::class, 'user_id', 'id');
+    }
 }
