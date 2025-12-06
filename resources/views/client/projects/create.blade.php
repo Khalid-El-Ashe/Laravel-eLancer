@@ -1,5 +1,5 @@
 <x-app-layout>
-    <form action="{{ route('client.projects.store') }}" method="post" enctype="multipart/form-data">
+    <form action="{{ route('client.projects.store') }}" method="post" enctype="multipart/form-data" enctype="multipart/form-data">
         @csrf
         @include('client.projects._form')
     </form>

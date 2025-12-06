@@ -6,8 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Client\ProjectRequest;
 use App\Models\Category;
 use App\Models\Project;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ProjectController extends Controller
 {
@@ -16,7 +19,7 @@ class ProjectController extends Controller
     {
         $user = Auth::user();
         // $projects = Project::with('category')->where('user_id', '=', $user->id)->paginate(10);
-        $projects = $user->projects()->with('category.parent')->paginate(10); // using the Nested-Eager-Loading (with())
+        $projects = $user->projects()->with('category.parent', 'tags')->paginate(10); // using the Nested-Eager-Loading (with())
         return view('client.projects.index', ['projects' => $projects]);
     }
 
@@ -27,7 +30,8 @@ class ProjectController extends Controller
         return view('client.projects.create', [
             'project' => new Project(),
             'types' => Project::types(),
-            'categories' => $this->categories()
+            'categories' => $this->categories(),
+            'tags' => [],
         ]);
     }
 
@@ -47,8 +51,18 @@ class ProjectController extends Controller
         //     'user_id' => $user->id // Auth::id()
         // ]);
 
+        $data = $request->except('attachments');
+        /**
+         * saving a multiFiles
+         */
+        $data['attachments'] = $this->uploadAttachments($request);
+
         // now i created the project using the relation
-        $project = $user->projects()->create($request->all());
+        $project = $user->projects()->create($data);
+        // now need to save tags and call the syncTags() function from (ProjectModel)
+        $tags = explode(',', $request->input('tags')); // now this tags is return a (type of Array[])
+        $project->syncTags($tags);
+
         return redirect()->route('client.projects.index', $project->id)
             ->with('success', 'Project created successfully.')->setStatusCode(201);
     }
@@ -64,19 +78,34 @@ class ProjectController extends Controller
     {
         $user = Auth::user();
         $project = $user->projects()->findOrFail($id);
+
+        // dd($project->attachments);
         return view('client.projects.edit', [
             'project' => $project,
             'types' => Project::types(),
             'categories' => $this->categories(),
+            'tags' => $project->tags()->pluck('name')->toArray()
         ]);
     }
 
     public function update(ProjectRequest $request, $id)
     {
         $user = Auth::user();
-        $project = $user->projects()->firstOrFail($id);
+        $project = $user->projects()->findOrFail($id);
 
-        $project->update($request->all());
+
+        $data = $request->except('attachments');
+        /**
+         * saving a multiFiles
+         */
+        $data['attachments'] = array_merge(($project->attachments ?? []), $this->uploadAttachments($request));
+        $project->update($data);
+
+
+        // now need to save tags and call the syncTags() function from (ProjectModel)
+        $tags = explode(',', $request->input('tags')); // now this tags is return a (type of Array[])
+        $project->syncTags($tags);
+
         return redirect()->route('client.projects.index')
             ->with('success', 'Project updated successfully.')->setStatusCode(200);
     }
@@ -89,9 +118,14 @@ class ProjectController extends Controller
 
         /**
          * or delete by relation
+         * when delete i need delete the files for this project
          */
         $user = Auth::user();
-        $user->projects()->where('id', $id)->delete();
+        $project = $user->projects()->findOrFail($id);
+        $project->delete();
+        foreach ($project->attachments as $file) {
+            Storage::disk('public')->delete($file);
+        }
 
         return redirect()->route('client.projects.index')
             ->with('success', 'Project deleted successfully.')->setStatusCode(200);
@@ -100,5 +134,30 @@ class ProjectController extends Controller
     protected function categories()
     {
         return Category::pluck('name', 'id')->toArray();
+    }
+
+    protected function uploadAttachments(ProjectRequest $request)
+    {
+        /**
+         * saving a multiFiles
+         */
+        if (!$request->hasFile('attachments')) {
+            return;
+        }
+        $files = $request->file('attachments');
+        $attachments = [];
+        foreach ($files as $file) {
+            if ($file->isValid()) {
+                // $file->getClientOriginalName();
+                // $file->getClientOriginalExtension();
+                // $file->getSize();
+                // $file->getMTime(); // last-time update for this file
+                $path = $file->store('/attachments', [
+                    'disk' => 'uploads'
+                ]);
+                $attachments[] = $path;
+            }
+        }
+        return $attachments;
     }
 }

@@ -58,10 +58,11 @@
                                     title="Maximum of 10 tags"></i></h5>
                             <div class="keywords-container">
                                 <div class="keyword-input-container">
-                                    {{--
-                                    <x-form.input name="tags" id="tags" :value="implode(', ', $tags ?? '')" type="text"
+
+                                    <x-form.input name="tags" id="tags" :value="implode(', ', $tags)" type="text"
                                         class="keyword-input with-border"
-                                        placeholder="e.g. job title, responsibilites" /> --}}
+                                        placeholder="e.g. job title, responsibilites" />
+
                                     <button type="button" class="keyword-input-button ripple-effect"><i
                                             class="icon-material-outline-add"></i></button>
                                 </div>
@@ -90,7 +91,7 @@
                             <div>
                                 <ul>
                                     @foreach ($project->attachments as $file)
-                                    <li><a href="{{ asset('uploads/' . $file) }}">{{ basename($file) }}</a></li>
+                                    <li><a href="{{ asset('storage/' . $file) }}">{{ basename($file) }}</a></li>
                                     @endforeach
                                 </ul>
                             </div>

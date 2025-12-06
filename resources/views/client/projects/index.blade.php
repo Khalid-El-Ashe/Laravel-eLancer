@@ -39,11 +39,11 @@
                                                 <li><i class="icon-material-outline-bookmarks"></i> Category : {{
                                                     $project->category->parent->name }} / {{$project->category->name }}
                                                 </li>
-                                                {{-- <li><i class="icon-material-outline-bookmarks"></i> Tags:
+                                                <li><i class="icon-material-outline-bookmarks"></i> Tags:
                                                     @foreach ($project->tags as $tag)
-                                                    <span class="bg-primary mx-1">{{ $tag->name }}</span>
+                                                    <span class="label label-success">{{ $tag->name }} - </span>
                                                     @endforeach
-                                                </li> --}}
+                                                </li>
                                             </ul>
                                         </div>
                                     </div>
@@ -60,8 +60,15 @@
                                     class="button gray ripple-effect ico" title="Edit" data-tippy-placement="top"><i
                                         class="icon-feather-edit"></i></a>
 
-                                <a href="#" class="button gray ripple-effect ico" title="Remove"
-                                    data-tippy-placement="top"><i class="icon-feather-trash-2"></i></a>
+                                <form action="{{ route('client.projects.destroy', $project->id) }}" method="post">
+                                    @csrf
+                                    <!-- Form Method Spoofing -->
+                                    {{-- <input type="hidden" name="_method" value="delete"> --}}
+                                    @method('delete')
+                                    <button type="submit" class="button gray ripple-effect ico" title="Remove"
+                                        data-tippy-placement="top"><i class="icon-feather-trash-2"></i></button>
+                                </form>
+
                             </div>
                         </li>
                         @endforeach
