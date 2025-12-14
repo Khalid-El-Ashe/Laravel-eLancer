@@ -158,7 +158,8 @@
                                 <div class="header-notifications-trigger">
                                     <a href="#">
                                         <div class="user-avatar status-online"><img
-                                                src="{{ Auth::user()->profile_photo_url }}" alt=""></div>
+                                                src="{{ asset('storage/'. Auth::user()->freelancer->profile_photo_path) }}"
+                                                alt=""></div>
                                     </a>
                                 </div>
 

@@ -2,7 +2,7 @@
     <x-slot name="title">My Account</x-slot>
 
     <div class="row">
-        <form action="{{ route('freelancer.profile.edit') }}" method="post">
+        <form action="{{ route('freelancer.profile.update') }}" method="post" enctype="multipart/form-data">
             @csrf
             @method('put')
             <!-- Dashboard Box -->
@@ -21,7 +21,7 @@
                             <div class="col-auto">
                                 <div class="avatar-wrapper" data-tippy-placement="bottom" title="Change Avatar">
                                     <img class="profile-pic"
-                                        src="{{ asset('assets/front/images/user-avatar-small-01.jpg') }}" alt="" />
+                                        src="{{ asset('storage/' . $profile->profile_photo_path) }}" alt="" />
                                     <div class="upload-button"></div>
                                     <input name="profile_photo" class="file-upload" type="file" accept="image/*" />
                                 </div>

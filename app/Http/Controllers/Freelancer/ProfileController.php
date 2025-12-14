@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -19,12 +20,55 @@ class ProfileController extends Controller
     {
         $request->validate([
             'first_name' => ['required'],
+            'profile_photo' => [
+                'nullable',
+                'mimes:jpg,jpeg',
+                'dimensions:min_width=200,min_height=200,max_height=1000,max_width=1000',
+            ],
         ]);
 
         $user = Auth::user();
-        $user->freelancer()->updateOrCreate([
-            'user_id' => $user->id,
-        ], $request->all());
+
+        /**
+         * @var mixed
+         * Old Photo Path
+         * Used to delete the old photo after update
+         */
+        $old_photo_path = $user->freelancer->profile_photo_path ?? null;
+        $data = [
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+        ];
+        if ($request->hasFile('profile_photo')) {
+            $file = $request->file('profile_photo');
+
+            // store in storage/app/public/profile_photos
+            $filepath = $file->store('profile_photos', ['disk' => 'public']);
+
+            // $request->merge(['profile_photo_path' => $filepath]);
+            $data['profile_photo_path'] = $filepath;
+        }
+
+        $user->freelancer()->updateOrCreate(['user_id' => $user->id], $data);
+
+        /**
+         * Update User Name
+         * First Name + Last Name
+         * if you want to change only the first name or last name
+         */
+        // $user->forceFill(
+        //     [
+        //         'name' => $request->input('first_name') . ' ' . $request->input('last_name')
+        //     ]
+        // )->save();
+
+        /**
+         * Delete Old Photo
+         * if new photo uploaded
+         */
+        if ($old_photo_path && isset($filepath)) {
+            Storage::disk('public')->delete($old_photo_path);
+        }
 
         return redirect()->route('freelancer.profile.edit')->with('success', 'Profile updated successfully.');
     }

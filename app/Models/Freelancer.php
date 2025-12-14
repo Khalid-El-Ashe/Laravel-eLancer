@@ -11,6 +11,8 @@ class Freelancer extends Model
 
     // must add the new primary key to the Model
     protected $primaryKey = 'user_id';
+    public $incrementing = false;
+    protected $keyType = 'int';
     protected $fillable = [
         'first_name',
         'last_name',
