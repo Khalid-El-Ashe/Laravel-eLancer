@@ -1,6 +1,18 @@
 <x-app-layout>
     <x-slot name="title">My Account</x-slot>
 
+    @if ($errors->any())
+    <div>
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    </div>
+    @endif
+
     <div class="row">
         <form action="{{ route('freelancer.profile.update') }}" method="post" enctype="multipart/form-data">
             @csrf

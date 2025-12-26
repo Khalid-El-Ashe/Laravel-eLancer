@@ -10,13 +10,19 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     libzip-dev \
     libpng-dev \
-    && docker-php-ext-install pdo_mysql mbstring xml zip gd
+    libicu-dev \
+    && docker-php-ext-install pdo_mysql mbstring xml zip gd intl
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Set working directory
 WORKDIR /var/www
+
+# Ensure correct permissions (base image level)
+RUN mkdir -p storage bootstrap/cache \
+    && chown -R www-data:www-data /var/www \
+    && chmod -R 775 storage bootstrap/cache
 
 # Copy application files
 CMD ["php-fpm"]

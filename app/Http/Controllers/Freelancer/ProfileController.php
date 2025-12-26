@@ -23,8 +23,9 @@ class ProfileController extends Controller
             'profile_photo' => [
                 'nullable',
                 'mimes:jpg,jpeg',
-                'dimensions:min_width=200,min_height=200,max_height=1000,max_width=1000',
+                // 'dimensions:min_width=200,min_height=200,max_height=1000,max_width=1000',
             ],
+            'country' => ['required', 'string', 'size:2'],
         ]);
 
         $user = Auth::user();
@@ -34,21 +35,23 @@ class ProfileController extends Controller
          * Old Photo Path
          * Used to delete the old photo after update
          */
-        $old_photo_path = $user->freelancer->profile_photo_path ?? null;
+        $old_photo_path = $user->freelancer->profile_photo_path;
         $data = [
             'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
+            'last_name'  => $request->last_name,
+            'country'    => $request->country,
         ];
+
         if ($request->hasFile('profile_photo')) {
-            $file = $request->file('profile_photo');
+            // $file = $request->file('profile_photo');
 
             // store in storage/app/public/profile_photos
-            $filepath = $file->store('profile_photos', ['disk' => 'public']);
+            $filepath = $request->file('profile_photo')->store('profile_photos', ['disk' => 'public']);
 
-            // $request->merge(['profile_photo_path' => $filepath]);
             $data['profile_photo_path'] = $filepath;
         }
 
+        // dd($request->all(), gettype($request->all()), $data);
         $user->freelancer()->updateOrCreate(['user_id' => $user->id], $data);
 
         /**
@@ -56,17 +59,17 @@ class ProfileController extends Controller
          * First Name + Last Name
          * if you want to change only the first name or last name
          */
-        // $user->forceFill(
-        //     [
-        //         'name' => $request->input('first_name') . ' ' . $request->input('last_name')
-        //     ]
-        // )->save();
+        $user->forceFill(
+            [
+                'name' => $request->input('first_name') . ' ' . $request->input('last_name')
+            ]
+        )->save();
 
         /**
          * Delete Old Photo
          * if new photo uploaded
          */
-        if ($old_photo_path && isset($filepath)) {
+        if ($old_photo_path && isset($data['profile_photo_path'])) {
             Storage::disk('public')->delete($old_photo_path);
         }
 
