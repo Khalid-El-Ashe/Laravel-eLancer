@@ -15,12 +15,27 @@ use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
 {
+    protected $guard = 'web';
+    /**
+     * Summary of __construct
+     * @param Request $request
+     * need check the request url is admin or not
+     */
+    public function __construct(Request $request)
+    {
+        if ($request->is('admin/*')) {
+            $this->guard = 'admin';
+        }
+    }
+
     /**
      * Display the login view.
      */
     public function create(): View
     {
-        return view('auth.login');
+        return view($this->guard === 'admin' ? 'auth.login' : 'auth.login', [
+            'routePrefix' => $this->guard === 'admin' ? 'admin.' : '',
+        ]);
     }
 
     /**
@@ -28,7 +43,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        $request->authenticate($this->guard);
 
         /**
          * @var mixed
@@ -60,7 +75,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        return redirect()->intended($this->guard === 'admin' ? route('dashboard') : RouteServiceProvider::HOME);
     }
 
     /**
@@ -68,7 +83,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        Auth::guard('web')->logout();
+        Auth::guard($this->guard)->logout();
 
         $request->session()->invalidate();
 

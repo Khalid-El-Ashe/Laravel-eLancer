@@ -14,6 +14,8 @@ class ProfileController extends Controller
     {
         $user = Auth::user(); // is return the current authenticated user
         $profile = $user->freelancer;
+        $user->freelancer->birth_date?->format('d/M/Y');
+        // optional($user->freelancer->birth_date?->format('d/M/Y')); // to be this value (birth_date) is optional if is null
         return view('freelancer.profile.edit', ['user' => $user, 'profile' => $profile]);
     }
     public function update(Request $request)
@@ -26,6 +28,9 @@ class ProfileController extends Controller
                 // 'dimensions:min_width=200,min_height=200,max_height=1000,max_width=1000',
             ],
             'country' => ['required', 'string', 'size:2'],
+            'title' => ['nullable', 'string', 'max:255'],
+            'description' => ['nullable', 'string', 'max:1000'],
+            'hourly_rate' => ['nullable', 'min:5']
         ]);
 
         $user = Auth::user();
@@ -40,6 +45,9 @@ class ProfileController extends Controller
             'first_name' => $request->first_name,
             'last_name'  => $request->last_name,
             'country'    => $request->country,
+            'title'      => $request->title,
+            'description' => $request->description,
+            'hourly_rate' => $request->hourly_rate
         ];
 
         if ($request->hasFile('profile_photo')) {

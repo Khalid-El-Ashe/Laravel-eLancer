@@ -8,6 +8,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -64,5 +65,84 @@ class User extends Authenticatable implements MustVerifyEmail
     public function projects()
     {
         return $this->hasMany(Project::class, 'user_id', 'id');
+    }
+
+    /**
+     * need make a accessor to get the User Profile Photo
+     */
+    public function getProfilePhotoUrlAttribute()
+    {
+        if ($this->freelancer->profile_photo == null) {
+            return asset('storage/' . $this->freelancer->profile_photo_path);
+        }
+        return asset('images/default.png');
+    }
+
+    public function getNameAttribute($value)
+    {
+        // this function to make the first letter uppercase
+        // return ucfirst($value);
+        return Str::title($value);
+    }
+
+    /**
+     * Motator => this function to make the email lowercase when store in database
+     */
+    public function setEmailAttribute($value)
+    {
+        $this->attributes['email'] = Str::lower($value); // make the email lowercase
+    }
+
+    /**
+     * Summary of proposals
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function proposals()
+    {
+        return $this->hasMany(Proposal::class, 'freelancer_id', 'id');
+    }
+
+    /**
+     * related model MANY-TO-MANY
+     */
+    public function proposedProjects()
+    {
+        return $this->belongsToMany(
+            Project::class,
+            'proposals',
+            'freelancer_id',
+            'project_id'
+        )->withPivot([
+            'description',
+            'cost',
+            'duration',
+            'duration_unit',
+            'status'
+        ]);
+    }
+    /**
+     * related model MANY-TO-MANY
+     */
+    public function contractedProjects()
+    {
+        return $this->belongsToMany(
+            Project::class,
+            'contracts',
+            'freelancer_id',
+            'project_id'
+        )->withPivot([
+            'proposal_id',
+            'cost',
+            'type',
+            'start_on',
+            'end_on',
+            'complete_on',
+            'hours',
+            'status'
+        ]);
+    }
+    public function contracts()
+    {
+        return $this->hasMany(Contract::class, 'freelancer_id', 'id');
     }
 }

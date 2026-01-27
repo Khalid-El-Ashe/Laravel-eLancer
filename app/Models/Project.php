@@ -71,6 +71,50 @@ class Project extends Model
         );
     }
 
+    public function proposals()
+    {
+        return $this->hasMany(Proposal::class);
+    }
+    public function contracts()
+    {
+        return $this->hasMany(Contract::class);
+    }
+
+    public function proposedFreelancers()
+    {
+        return $this->belongsToMany(
+            User::class,
+            'proposals',
+            'project_id',
+            'freelancer_id',
+        )->withPivot([
+            'description',
+            'cost',
+            'duration',
+            'duration_unit',
+            'status'
+        ]);
+    }
+
+    // Project -> Contract (project_id) -> Freelancer (contract_id) (User)
+    public function contractedFreelancers()
+    {
+        return $this->belongsToMany(
+            User::class,
+            'contracts',
+            'project_id',
+            'freelancer_id',
+        )->withPivot([
+            'proposal_id',
+            'cost',
+            'type',
+            'start_on',
+            'end_on',
+            'complete_on',
+            'hours',
+            'status'
+        ]);
+    }
     public function syncTags(array $tags)
     {
         // now need to save tags

@@ -1,47 +1,56 @@
 services:
- app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: laravel_elancer_app
-    volumes:
-      - .:/var/www
-    depends_on:
-      - database
-    networks:
-      - laravel
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: laravel_elancer_app
+        volumes:
+            - .:/var/www
+        depends_on:
+            - database
+        networks:
+            - laravel
 
- nginx:
-    image: nginx:latest
-    container_name: laravel_nginx
-    ports:
-      - "8081:80"
-    volumes:
-      - .:/var/www
-      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
-    depends_on:
-      - app
-    networks:
-      - laravel
+    nginx:
+        image: nginx:latest
+        container_name: laravel_nginx
+        ports:
+            - "8081:80"
+        volumes:
+            - .:/var/www
+            - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+        depends_on:
+            - app
+        networks:
+            - laravel
 
- database:
-    image: mysql:8.0
-    container_name: laravel_db
-    environment:
-      MYSQL_DATABASE: elancer
-      MYSQL_USER: elancer
-      MYSQL_PASSWORD: secret
-      MYSQL_ROOT_PASSWORD: root
-    ports:
-      - "3307:3306"
-    volumes:
-      - mySql:/var/lib/mysql
-    networks:
-      - laravel
+    database:
+        image: mysql:8.0
+        container_name: laravel_db
+        environment:
+            MYSQL_DATABASE: elancer
+            MYSQL_USER: elancer
+            MYSQL_PASSWORD: secret
+            MYSQL_ROOT_PASSWORD: root
+        ports:
+            - "3307:3306"
+        volumes:
+            - mySql:/var/lib/mysql
+        networks:
+            - laravel
+
+    mailpit:
+        image: axllent/mailpit
+        container_name: mailpit
+        ports:
+            - "8025:8025" # Web UI
+            - "1025:1025" # SMTP
+        networks:
+            - laravel
 
 volumes:
-  mySql:
+    mySql:
 
 networks:
-  laravel:
-    driver: bridge
+    laravel:
+        driver: bridge

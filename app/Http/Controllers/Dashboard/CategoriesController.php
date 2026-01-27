@@ -43,7 +43,7 @@ class CategoriesController extends Controller
 
         $categories = Category::leftJoin('categories as parents', 'parents.id', '=', 'categories.parent_id')
             ->select(['categories.*', 'parents.name as parent_name'])->paginate(3);
-        
+
 
         return view('categories.index', [
             'categories' => $categories,

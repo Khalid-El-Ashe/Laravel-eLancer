@@ -6,7 +6,7 @@
 
         <!-- Trigger -->
         <div class="header-notifications-trigger">
-            <a href="#"><i class="icon-feather-bell"></i><span id="newNotifications">new</span></a>
+            <a href="#"><i class="icon-feather-bell"></i><span id="newNotifications">{{ $new }}</span></a>
         </div>
 
         <!-- Dropdown -->
@@ -22,7 +22,7 @@
             <div class="header-notifications-content">
                 <div class="header-notifications-scroll" data-simplebar>
                     <ul id="notificationsList">
-                        {{-- @foreach ($notifications as $notification)
+                        @foreach ($notifications as $notification)
                         <!-- Notification -->
                         <li class="notifications-not-read">
                             <a href="{{ $notification->data['url'] }}?notify_id={{ $notification->id }}">
@@ -35,7 +35,7 @@
                                 </span>
                             </a>
                         </li>
-                        @endforeach --}}
+                        @endforeach
                     </ul>
                 </div>
             </div>
@@ -66,10 +66,12 @@
                         <!-- Notification -->
                         <li class="notifications-not-read">
                             <a href="dashboard-messages.html">
-                                <span class="notification-avatar status-online"><img src="images/user-avatar-small-03.jpg" alt=""></span>
+                                <span class="notification-avatar status-online"><img
+                                        src="images/user-avatar-small-03.jpg" alt=""></span>
                                 <div class="notification-text">
                                     <strong>David Peterson</strong>
-                                    <p class="notification-msg-text">Thanks for reaching out. I'm quite busy right now on many...</p>
+                                    <p class="notification-msg-text">Thanks for reaching out. I'm quite busy right now
+                                        on many...</p>
                                     <span class="color">4 hours ago</span>
                                 </div>
                             </a>
@@ -78,10 +80,12 @@
                         <!-- Notification -->
                         <li class="notifications-not-read">
                             <a href="dashboard-messages.html">
-                                <span class="notification-avatar status-offline"><img src="images/user-avatar-small-02.jpg" alt=""></span>
+                                <span class="notification-avatar status-offline"><img
+                                        src="images/user-avatar-small-02.jpg" alt=""></span>
                                 <div class="notification-text">
                                     <strong>Sindy Forest</strong>
-                                    <p class="notification-msg-text">Hi Tom! Hate to break it to you, but I'm actually on vacation until...</p>
+                                    <p class="notification-msg-text">Hi Tom! Hate to break it to you, but I'm actually
+                                        on vacation until...</p>
                                     <span class="color">Yesterday</span>
                                 </div>
                             </a>
@@ -90,7 +94,8 @@
                         <!-- Notification -->
                         <li class="notifications-not-read">
                             <a href="dashboard-messages.html">
-                                <span class="notification-avatar status-online"><img src="images/user-avatar-placeholder.png" alt=""></span>
+                                <span class="notification-avatar status-online"><img
+                                        src="images/user-avatar-placeholder.png" alt=""></span>
                                 <div class="notification-text">
                                     <strong>Marcin Kowalski</strong>
                                     <p class="notification-msg-text">I received payment. Thanks for cooperation!</p>
@@ -102,7 +107,8 @@
                 </div>
             </div>
 
-            <a href="dashboard-messages.html" class="header-notifications-button ripple-effect button-sliding-icon">View All Messages<i class="icon-material-outline-arrow-right-alt"></i></a>
+            <a href="dashboard-messages.html" class="header-notifications-button ripple-effect button-sliding-icon">View
+                All Messages<i class="icon-material-outline-arrow-right-alt"></i></a>
         </div>
     </div>
 

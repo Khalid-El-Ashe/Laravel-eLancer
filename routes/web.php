@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProjectsController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,7 +21,7 @@ Route::get('/', function () {
 
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth:admin', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -28,7 +29,16 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::get('projects/{project}', [ProjectsController::class, 'show'])->name('projects.show');
+
 require __DIR__ . '/auth.php';
+// Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
+//     require __DIR__ . '/auth.php';
+// });
+// Route::group(['prefix' => 'web'], function () {
+//     require __DIR__ . '/auth.php';
+// });
+
 require __DIR__ . '/dashboard.php';
 require __DIR__ . '/freelancer.php';
 require __DIR__ . '/client.php';

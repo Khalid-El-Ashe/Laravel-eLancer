@@ -60,7 +60,8 @@
                                 placeholder="Password" required />
                         </div>
                         @if (Route::has('password.request'))
-                        <a href="{{ route('password.request') }}" class="forgot-password">Forgot Password?</a>
+                        <a href="{{ route('password.request') }}" class="forgot-password">Forgot
+                            Password?</a>
                         @endif
                     </form>
 

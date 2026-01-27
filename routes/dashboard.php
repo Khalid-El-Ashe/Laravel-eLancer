@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 Route::group([
     'prefix' => 'dashboard/',
     // 'namespace' => 'App\Http\Controllers\Dashboard',
-    'middleware' => ['auth'],
+    'middleware' => ['auth:admin'],
     // 'as' => 'categories.',
     // 'middleware' => ''
 ], function () {

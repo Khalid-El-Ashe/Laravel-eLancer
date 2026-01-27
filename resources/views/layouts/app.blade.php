@@ -157,9 +157,10 @@
                             <div class="header-notifications user-menu">
                                 <div class="header-notifications-trigger">
                                     <a href="#">
-                                        <div class="user-avatar status-online"><img
-                                                src="{{ asset('storage/'. Auth::user()->freelancer->profile_photo_path) }}"
-                                                alt=""></div>
+                                        <div class="user-avatar status-online">
+                                            <img src="{{ optional(Auth::user()->freelancer)->profile_photo_path ? asset('storage/' . optional(Auth::user()->freelancer)->profile_photo_path) : asset('images/default.png') }}"
+                                                alt="">
+                                        </div>
                                     </a>
                                 </div>
 
@@ -192,8 +193,15 @@
                                                 Dashboard</a></li>
                                         <li><a href="dashboard-settings.html"><i
                                                     class="icon-material-outline-settings"></i> Settings</a></li>
-                                        <li><a href="index-logged-out.html"><i
-                                                    class="icon-material-outline-power-settings-new"></i> Logout</a>
+                                        <li><a href="{{ route('logout') }}"><i class=""></i> Logout</a>
+
+                                            {{-- <form method="POST" action="{{ route('logout') }}">
+                                                @csrf
+
+                                                <button type="submit" class="icon-material-outline-power-settings-new">
+                                                    Logout
+                                                </button>
+                                            </form> --}}
                                         </li>
                                     </ul>
 
@@ -283,7 +291,7 @@
                                 <ul data-submenu-title="Account">
                                     <li class="active"><a href="dashboard-settings.html"><i
                                                 class="icon-material-outline-settings"></i> Settings</a></li>
-                                    <li><a href="index-logged-out.html"><i
+                                    <li><a href="{{ route('logout') }}"><i
                                                 class="icon-material-outline-power-settings-new"></i> Logout</a></li>
                                 </ul>
 

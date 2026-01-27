@@ -25,6 +25,12 @@ class Freelancer extends Model
         'gender',
         'birth_date'
     ];
+
+    protected $casts = [
+        'birth_date' => 'date',
+        'hourly_rate' => 'float',
+    ];
+
     /**
      * i need to create the Relations with User Model
      * This table is Following the User Model (belongsTo())
