@@ -145,4 +145,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Contract::class, 'freelancer_id', 'id');
     }
+
+    public function routeNotificationForEmail($notification = null)
+    {
+        return $this->email;
+    }
 }

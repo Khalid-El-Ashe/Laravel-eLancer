@@ -10,8 +10,8 @@ Route::group([
     'middleware' => ['auth:web']
 ], function () {
     Route::get('proposals', [ProposalsController::class, 'index'])->name('proposal.index');
-    Route::get('proposals/{project}/create', [ProposalsController::class, 'create'])->name('proposal.create');
-    Route::post('proposals/{project}/create', [ProposalsController::class, 'store'])->name('proposal.store');
+    Route::get('proposals/{project}', [ProposalsController::class, 'create'])->name('proposal.create');
+    Route::post('proposals/{project}', [ProposalsController::class, 'store'])->name('proposal.store');
     Route::delete('proposal/{id}', [ProposalsController::class, 'destroy'])->name('proposal.destroy');
 
 

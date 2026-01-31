@@ -6,7 +6,8 @@
 
         <!-- Trigger -->
         <div class="header-notifications-trigger">
-            <a href="#"><i class="icon-feather-bell"></i><span id="newNotifications">{{ $new }}</span></a>
+            <a href="#"><i class="icon-feather-bell"></i><span id="newNotifications" data-count="{{ $new }}">{{ $new >
+                    10 ? '10+' : $new }}</span></a>
         </div>
 
         <!-- Dropdown -->

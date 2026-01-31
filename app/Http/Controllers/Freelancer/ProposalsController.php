@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Freelancer;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
 use App\Models\Project;
 use App\Models\Proposal;
 use App\Notifications\NewProposalNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 
 class ProposalsController extends Controller
 {
@@ -30,18 +32,6 @@ class ProposalsController extends Controller
      */
     public function create(Project $project)
     {
-        // if ($project->status !== 'open') {
-        //     // ->withErrors(['status' => 'You Can Not Submit Proposal to this project']);
-        //     return redirect()->route('freelancer.proposal.index')->with('error', 'You Can Not Submit Proposal to this project');
-        // }
-        // $this->authorize('create', [Proposal::class, $project]);
-
-        // $user = auth()->guard('web')->user();
-        // if ($user->proposedProjects()->find($project->id)) {
-        //     //  ->withErrors(['proposal' => 'You already submitted this Proposal']);
-        //     return redirect()->route('freelancer.proposal.index')->with('error', 'You already submited this Proposal');
-        // }
-
         return view('freelancer.proposals.create', [
             'project' => $project,
             'proposal' => new Proposal(),
@@ -89,6 +79,18 @@ class ProposalsController extends Controller
         $project->user->notify(
             new NewProposalNotification($proposal, $user)
         );
+
+        // if need send a notification for list of users
+        $admins = Admin::all();
+        // foreach ($admins as $admin) {
+        //     $admin->notify(new NewProposalNotification($proposal, $user));
+        // }
+        /** or **/
+        // Notification::send($admins, new NewProposalNotification($proposal, $user));
+
+        // if need send an email for outer email
+        // ارسال رسالة إلى ايميل خارج النظام غير مسجل في قاعدة بيانات النظام
+        Notification::route('mail', 'developer@ok.dev')->notify(new NewProposalNotification($proposal, $user));
 
         return
             // redirect()->route('projects.show', $project->id)

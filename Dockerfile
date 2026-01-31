@@ -24,5 +24,9 @@ RUN mkdir -p storage bootstrap/cache \
     && chown -R www-data:www-data /var/www \
     && chmod -R 775 storage bootstrap/cache
 
+# install nodejs & npm
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs
+
 # Copy application files
 CMD ["php-fpm"]

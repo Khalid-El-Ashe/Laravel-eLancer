@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProjectsController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -30,6 +31,12 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('projects/{project}', [ProjectsController::class, 'show'])->name('projects.show');
+
+// messages route
+Route::middleware('auth')->group(function () {
+    Route::get('messages', [MessageController::class, 'create'])->name('messages');
+    Route::post('messages', [MessageController::class, 'store']);
+});
 
 require __DIR__ . '/auth.php';
 // Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {

@@ -5,6 +5,8 @@ namespace App\Notifications;
 use App\Models\Proposal;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\AnonymousNotifiable;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -29,14 +31,16 @@ class NewProposalNotification extends Notification
      *
      * @return array<int, string>
      */
-public function via(object $notifiable): array
+    public function via(object $notifiable): array
     {
-        $via = ['database'];
-        if ($notifiable->notify_mail) {
-            $via[] = 'mail';
-        }
-        if ($notifiable->notify_sms) {
-            $via[] = 'nexmo';
+        $via = ['database', 'mail', 'broadcast'];
+        if (!$notifiable instanceof AnonymousNotifiable) {
+            if ($notifiable->notify_mail) {
+                $via[] = 'mail';
+            }
+            if ($notifiable->notify_sms) {
+                $via[] = 'nexmo';
+            }
         }
         return $via;
     }
@@ -53,13 +57,38 @@ public function via(object $notifiable): array
             $this->proposal->project->title
         );
 
-        $message->subject('New Proposal')->line("Hello $notifiable->name")
+        $message->subject('New Proposal')
             ->from(config('mail.from.address'), config('mail.from.name'))
+            ->greeting('Hello ' . ($notifiable->name ?? ''))
             ->line($body)
             ->action('Show to Proposal', route('projects.show', $this->proposal->project_id))
             ->line('Thank you for using our application!');
-        // ->view('');
+        // ->view('mails.proposal', [
+        //     'proposal' => $this->proposal,
+        //     'notifiable' => $notifiable,
+        //     'freelancer' => $this->freelancer
+        // ]);
         return $message;
+    }
+
+    /**
+     * Summary of toBroadcast
+     * @param mixed $notifiable
+     * @return BroadcastMessage
+     */
+    public function toBroadcast($notifiable)
+    {
+        $body = sprintf(
+            '%s applied for a job %s',
+            $this->freelancer->name,
+            $this->proposal->project->title
+        );
+        return new BroadcastMessage([
+            'title' => 'New Proposal',
+            'body' => $body,
+            'icon' => 'icon-materail-outline-group',
+            'url' => route('projects.show', $this->proposal->project_id)
+        ]);
     }
 
     /**

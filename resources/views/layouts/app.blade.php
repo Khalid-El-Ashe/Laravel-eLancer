@@ -387,7 +387,7 @@
     <script>
         const userId = "{{ Auth::id() }}";
     </script>
-    <script src="{{ asset('js/app.js') }}"></script>
+    @vite(['resources/js/app.js'])
 
     <!-- Snackbar // documentation: https://www.polonel.com/snackbar/ -->
     <script>

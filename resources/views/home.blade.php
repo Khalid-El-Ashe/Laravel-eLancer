@@ -230,7 +230,7 @@
                                     </h3>
                                     <ul class="task-icons">
                                         <li><i class="icon-material-outline-location-on"></i>
-                                         {{-- {{ $project->category->name }} --}}
+                                            {{-- {{ $project->category->name }} --}}
                                         </li>
                                         <li><i class="icon-material-outline-access-time"></i>
                                             {{-- {{ $project->created_at->diffForHumans() }} --}}
