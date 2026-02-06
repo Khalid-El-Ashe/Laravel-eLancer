@@ -1,5 +1,7 @@
 <?php
 
+namespace Routes\Web;
+
 use App\Http\Controllers\Client\ProjectController;
 use App\Http\Controllers\MessageController;
 use Illuminate\Support\Facades\Route;

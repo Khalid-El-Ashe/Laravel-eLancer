@@ -42,7 +42,7 @@ class CategoriesController extends Controller
         //     ->select(['categories.*', 'parents.name as parent_name'])->get();
 
         $categories = Category::leftJoin('categories as parents', 'parents.id', '=', 'categories.parent_id')
-            ->select(['categories.*', 'parents.name as parent_name'])->paginate(3);
+            ->select(['categories.*', 'parents.name as parent_name'])->paginate(10);
 
 
         return view('categories.index', [
@@ -167,6 +167,25 @@ class CategoriesController extends Controller
         // session()->flash('success', 'Category is Deleted');
         // Session::flash('success', 'Category is Deleted');
         return redirect()->route('categories.index')->with('success', 'Category is Deleted')->setStatusCode(200);
+    }
+
+    public function trash()
+    {
+        // Category::withTrashed();
+        $categories = Category::onlyTrashed()->paginate();
+        return view('categories.trash', ['categories' => $categories]);
+    }
+    public function restore(Request $request, $id)
+    {
+        $category = Category::onlyTrashed()->findOrFail($id);
+        $category->restore();
+        return to_route('categories.index')->with('success', 'Category is Restored!');
+    }
+    public function forceDelete($id)
+    {
+        $category = Category::withTrashed()->findOrFail($id);
+        $category->forceDelete();
+        return to_route('categories.index')->with('success', 'Category is Deleted for ever!');
     }
 
     protected function rules()

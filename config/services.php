@@ -31,4 +31,10 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'nepras' => [
+        'user' => env('NEPRAS_USER'),
+        'pass' => env('NEPRAS_PASS'),
+        'sender' => env('NEPRAS_SENDER')
+    ],
+
 ];

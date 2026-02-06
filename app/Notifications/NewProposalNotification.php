@@ -2,6 +2,8 @@
 
 namespace App\Notifications;
 
+use App\Channels\Log;
+use App\Channels\Nepras;
 use App\Models\Proposal;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
@@ -33,7 +35,9 @@ class NewProposalNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        $via = ['database', 'mail', 'broadcast'];
+        // $via = ['database', 'mail', 'broadcast'];
+        $via = [Log::class, Nepras::class];
+
         if (!$notifiable instanceof AnonymousNotifiable) {
             if ($notifiable->notify_mail) {
                 $via[] = 'mail';
@@ -111,6 +115,27 @@ class NewProposalNotification extends Notification
         ];
     }
 
+    public function toLog($notifiable)
+    {
+        $body = sprintf(
+            '%s applied for a job %s',
+            $this->freelancer->name,
+            $this->proposal->project->title
+        );
+
+        return $body;
+    }
+
+    public function toNepras($notifiable)
+    {
+        $body = sprintf(
+            '%s applied for a job %s',
+            $this->freelancer->name,
+            $this->proposal->project->title
+        );
+
+        return $body;
+    }
 
     /**
      * Get the array representation of the notification.

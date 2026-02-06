@@ -1,5 +1,7 @@
 <?php
 
+namespace Routes\Web;
+
 use App\Http\Controllers\Freelancer\ProfileController;
 use App\Http\Controllers\Freelancer\ProposalsController;
 use Illuminate\Support\Facades\Route;

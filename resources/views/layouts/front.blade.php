@@ -1,18 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ App::currentLocale() }}" dir="{{ LaravelLocalization::getCurrentLocaleDirection() }}">
 
 <head>
 
     <!-- Basic Page Needs
-================================================== -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    ================================================== -->
     <title>{{ config('app.name') }} | {{ $title }}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
     <!-- CSS
-================================================== -->
+    ================================================== -->
+    @if ( LaravelLocalization::getCurrentLocaleDirection() == 'rtl')
     <link rel="stylesheet" href="{{ asset('assets/front/css/style.rtl.css') }}">
+    @else
     <link rel="stylesheet" href="{{ asset('assets/front/css/style.css') }}">
+    @endif
     <link rel="stylesheet" href="{{ asset('assets/front/css/colors/blue.css') }}">
 
 </head>
@@ -42,7 +45,7 @@
                         <nav id="navigation">
                             <ul id="responsive">
 
-                                <li><a href="#">Home</a>
+                                <li><a href="#">{{ __('Home') }}</a>
                                     <ul class="dropdown-nav">
                                         <li><a href="#">Home 1</a></li>
                                         <li><a href="#">Home 2</a></li>
@@ -50,9 +53,9 @@
                                     </ul>
                                 </li>
 
-                                <li><a href="#">Find Work</a>
+                                <li><a href="#">{{ trans('Find Work') }}</a>
                                     <ul class="dropdown-nav">
-                                        <li><a href="#">Browse Jobs</a>
+                                        <li><a href="#">@lang('Browse Jobs')</a>
                                             <ul class="dropdown-nav">
                                                 <li><a href="#">Full Page List +
                                                         Map</a></li>
@@ -64,7 +67,7 @@
                                                 <li><a href="#">Grid Layout</a></li>
                                             </ul>
                                         </li>
-                                        <li><a href="#">Browse Tasks</a>
+                                        <li><a href="#">{{ Lang::get('Browse Tasks') }}</a>
                                             <ul class="dropdown-nav">
                                                 <li><a href="#">List Layout 1</a></li>
                                                 <li><a href="#">List Layout 2</a></li>
@@ -79,9 +82,9 @@
                                     </ul>
                                 </li>
 
-                                <li><a href="#">For Employers</a>
+                                <li><a href="#">{{ __('For Employers') }}</a>
                                     <ul class="dropdown-nav">
-                                        <li><a href="#">Find a Freelancer</a>
+                                        <li><a href="#">{{ __('Find a Freelancer') }}</a>
                                             <ul class="dropdown-nav">
                                                 <li><a href="#">Full Page Grid</a>
                                                 </li>
@@ -140,15 +143,14 @@
                                 <li>
                                     <a href="#" class="current">Language</a>
                                     <ul class="dropdown-nav">
-                                        {{-- @foreach(LaravelLocalization::getSupportedLocales() as $localeCode =>
-                                        $properties) --}}
+                                        @foreach(LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
                                         <li>
-                                            <a rel="alternate" {{-- hreflang="{{ $localeCode }}" --}} {{--
+                                            <a rel="alternate" hreflang="{{ $localeCode }}"
                                                 href="{{ LaravelLocalization::getLocalizedURL($localeCode, null, [], true) }}">
-                                                {{ $properties['native'] }} --}}
+                                                {{ $properties['native'] }}
                                             </a>
                                         </li>
-                                        {{-- @endforeach --}}
+                                        @endforeach
                                     </ul>
                                 </li>
 
@@ -379,7 +381,7 @@
                         <!-- Links -->
                         <div class="col-xl-2 col-lg-2 col-md-3">
                             <div class="footer-links">
-                                <h3>Account</h3>
+                                <h3>{{ __('Account') }}</h3>
                                 <ul>
                                     <li><a href="#"><span>Log In</span></a></li>
                                     <li><a href="#"><span>My Account</span></a></li>
@@ -434,6 +436,7 @@
     <script src="{{ asset('assets/front/js/magnific-popup.min.js') }}"></script>
     <script src="{{ asset('assets/front/js/slick.min.js') }}"></script>
     <script src="{{ asset('assets/front/js/custom.js') }}"></script>
+
     <script>
         const userId = "{{ Auth::id() }}";
     </script>

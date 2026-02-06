@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -20,12 +21,95 @@ class Project extends Model
         'budget',
         'attachments'
     ];
+
+    /**
+     * Summary of booted
+     * Global Scope
+     * is access outomatical when the controller is access
+     */
+    protected static function booted()
+    {
+        static::addGlobalScope('active', function (Builder $builder) {
+            $builder->where('status', '=', 'open');
+        });
+    }
+
+    /**
+     * Local Scope
+     * is access when the developer/user access the controller/route
+     */
+    public function scopeClosed(Builder $builder)
+    {
+        $builder->where('status', '=', 'closed');
+    }
+    public function scopeActive(Builder $builder)
+    {
+        $builder->where('status', '=', 'active');
+    }
+    public function scopeHourly(Builder $builder)
+    {
+        $builder->where('hourly', '=', 'hourly');
+    }
+    public function scopeFilter(Builder $builder, $filters = [])
+    {
+        $filters = array_merge(
+            [
+                'type' => null,
+                'status' => null,
+                'budget_min' => null,
+                'budget_max' => null
+            ],
+            $filters
+        );
+        if ($filters['type']) {
+            $builder->where('type', '=', $filters['type']);
+        }
+
+        // the function is access when the valueOf(type) is true
+        $builder->when($filters['type'], function ($builder, $value) {
+            $builder->where('status', '=', $value);
+        });
+
+        $builder->when($filters['budget_min'], function ($builder, $value) {
+            $builder->where('budget', '>=', $value);
+        });
+
+        $builder->when($filters['budget_max'], function ($builder, $value) {
+            $builder->where('budget', '<=', $value);
+        });
+    }
+    public function scopeHighestBudget(Builder $build)
+    {
+        $build->orderBy('budget', 'DESC');
+    }
+
     protected $casts = [
         'budget' => 'float',
         'attachments' => 'json'
     ];
     const TYPE_FIXED = 'fixed';
     const TYPE_HOURLY = 'hourly';
+
+
+    // i need hidden a column when using in json api
+    protected $hidden = [
+        'created_at',
+        'updated_at'
+    ];
+
+    // access the accessuer method or any data need
+    protected $appends = [
+        'type_name'
+    ];
+
+    /**
+     * need make an accessuer method
+     */
+    public function getTypeNameAttribute()
+    {
+        //$project->type_name
+        return ucfirst($this->type);
+    }
 
     /**
      * i need to create the Relations with User Model
@@ -128,5 +212,13 @@ class Project extends Model
             $tags_id[] = $tag->id;
         }
         $this->tags()->sync($tags_id);
+    }
+
+    public function toJson($option = 0)
+    {
+        return json_encode([
+            'id' => $this->id,
+            'name' => $this->title
+        ]);
     }
 }

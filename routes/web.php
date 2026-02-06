@@ -4,6 +4,7 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProjectsController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,8 +17,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('home');
+Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
+
+    Route::get('/', function () {
+        return view('home');
+    });
+
+    Route::get('projects/{project}', [ProjectsController::class, 'show'])->name('projects.show');
 });
 
 Route::get('/dashboard', function () {
@@ -38,7 +44,7 @@ Route::middleware('auth')->group(function () {
     Route::post('messages', [MessageController::class, 'store']);
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__ . '/web/auth.php';
 // Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
 //     require __DIR__ . '/auth.php';
 // });
@@ -46,6 +52,6 @@ require __DIR__ . '/auth.php';
 //     require __DIR__ . '/auth.php';
 // });
 
-require __DIR__ . '/dashboard.php';
-require __DIR__ . '/freelancer.php';
-require __DIR__ . '/client.php';
+require __DIR__ . '/web/dashboard.php';
+require __DIR__ . '/web//freelancer.php';
+require __DIR__ . '/web//client.php';

@@ -37,7 +37,8 @@
                                                 <li><i class="icon-material-outline-date-range"></i> Posted on {{
                                                     $project->created_at }}</li>
                                                 <li><i class="icon-material-outline-bookmarks"></i> Category : {{
-                                                    $project->category->parent->name }} / {{$project->category->name }}
+                                                    $project->category->parent->name ?? '—' }} /
+                                                    {{$project->category->name ?? '—' }}
                                                 </li>
                                                 <li><i class="icon-material-outline-bookmarks"></i> Tags:
                                                     @foreach ($project->tags as $tag)

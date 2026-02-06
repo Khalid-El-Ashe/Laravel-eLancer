@@ -19,14 +19,18 @@ class ProjectController extends Controller
     {
         $user = Auth::user();
         // $projects = Project::with('category')->where('user_id', '=', $user->id)->paginate(10);
-        $projects = $user->projects()->with('category.parent', 'tags')->paginate(10); // using the Nested-Eager-Loading (with())
+        $projects = $user->projects()
+            /** if you need turned the once Globel Scope or all Global Scope ->withoutGlobalScopes()   */
+            ->withoutGlobalScope('active')
+            // ->hourly() /** calling the Local Scope */
+            // ->filter(['status' => 'open', 'budget_min' => 1000, 'budget_max' => 4000])
+            ->highestBudget()
+            ->with('category.parent', 'tags')->paginate(3); // using the Nested-Eager-Loading (with())
         return view('client.projects.index', ['projects' => $projects]);
     }
 
     public function create()
     {
-
-
         return view('client.projects.create', [
             'project' => new Project(),
             'types' => Project::types(),
@@ -107,7 +111,7 @@ class ProjectController extends Controller
         $project->syncTags($tags);
 
         return redirect()->route('client.projects.index')
-            ->with('success', 'Project updated successfully.')->setStatusCode(200);
+            ->with('success', __('Project updated successfully.'))->setStatusCode(200);
     }
 
     public function destroy($id)
