@@ -17,41 +17,37 @@ use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 |
 */
 
-Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
+Route::group([
+    'prefix' => LaravelLocalization::setLocale(),
+    'middleware' => ['localeSessionRedirect', 'localizationRedirect', 'localeViewPath']
+], function () {
 
+    // public
     Route::get('/', function () {
         return view('home');
     });
 
     Route::get('projects/{project}', [ProjectsController::class, 'show'])->name('projects.show');
+
+    // dashboard
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->middleware(['auth:admin', 'verified'])->name('dashboard');
+
+    // auth routes
+    Route::middleware('auth')->group(function () {
+
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+        Route::get('messages', [MessageController::class, 'create'])->name('messages');
+        Route::post('messages', [MessageController::class, 'store']);
+    });
+
+    // external route files
+    require __DIR__ . '/web/auth.php';
+    require __DIR__ . '/web/dashboard.php';
+    require __DIR__ . '/web/freelancer.php';
+    require __DIR__ . '/web/client.php';
 });
-
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth:admin', 'verified'])->name('dashboard');
-
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-
-Route::get('projects/{project}', [ProjectsController::class, 'show'])->name('projects.show');
-
-// messages route
-Route::middleware('auth')->group(function () {
-    Route::get('messages', [MessageController::class, 'create'])->name('messages');
-    Route::post('messages', [MessageController::class, 'store']);
-});
-
-require __DIR__ . '/web/auth.php';
-// Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
-//     require __DIR__ . '/auth.php';
-// });
-// Route::group(['prefix' => 'web'], function () {
-//     require __DIR__ . '/auth.php';
-// });
-
-require __DIR__ . '/web/dashboard.php';
-require __DIR__ . '/web//freelancer.php';
-require __DIR__ . '/web//client.php';

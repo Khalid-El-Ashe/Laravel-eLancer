@@ -181,4 +181,20 @@ class User extends Authenticatable implements MustVerifyEmail
 
         return new NewAccessToken($token, $token->getKey() . '|' . $plainTextToken);
     }
+
+    # build a Relation
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'role_user');
+    }
+
+    public function hasAbility($ability)
+    {
+        foreach ($this->roles as $role) {
+            if (in_array($ability, $role->abilities)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

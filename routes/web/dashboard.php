@@ -3,6 +3,7 @@
 namespace Routes\Web;
 
 use App\Http\Controllers\Dashboard\CategoriesController;
+use App\Http\Controllers\Dashboard\RolesController;
 use Illuminate\Support\Facades\Route;
 
 Route::group([
@@ -48,4 +49,13 @@ Route::group([
     // Route::put('categories/{id}', [CategoriesController::class, 'update'])->name('update');
     // Route::delete('categorie/{id}', [CategoriesController::class, 'destroy'])->name('destroy');
 
+
+    Route::prefix('roles')->as('roles.')->group(function () {
+        Route::get('/', [RolesController::class, 'index'])->name('index');
+        Route::get('/create', [RolesController::class, 'create'])->name('create');
+        Route::post('/', [RolesController::class, 'store'])->name('store');
+        Route::get('/{role}', [RolesController::class, 'edit'])->name('edit');
+        Route::put('/{role}', [RolesController::class, 'update'])->name('update');
+        Route::delete('/{role}', [RolesController::class, 'destroy'])->name('destroy');
+    });
 });

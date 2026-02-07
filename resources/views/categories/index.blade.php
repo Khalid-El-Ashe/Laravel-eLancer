@@ -2,7 +2,11 @@
 @section('content')
 <h1 class="mb-3">Categories</h1>
 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+    {{-- @if (Auth::user()->can('categories.create')) --}}
+    @can('create', 'App\\Models\Category')
     <small><a class="btn btn-primary" href="{{ route('categories.create') }}">New Category</a></small>
+    {{-- @endif --}}
+    @endcan
 </div>
 
 <x-flash-message />
@@ -29,9 +33,13 @@
                 <td>{{$category->created_at}}</td>
                 <td>
                     <div class="btn-group">
+                        @can('update', $category)
                         <a href="{{ route('categories.edit', $category->id) }}"
                             class="btn btn-sm btn-outline-success">Edit</a>
+                        @endcan
 
+                        {{-- @if (Gate::allows('categories.delete'))--}}
+                        @can('destroy', $category)
                         <form action="{{ route('categories.destroy', $category->id) }}" method="post">
                             @csrf
                             <!-- Form Method Spoofing -->
@@ -39,6 +47,8 @@
                             @method('delete')
                             <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
                         </form>
+                        {{-- @endif --}}
+                        @endcan
                     </div>
                 </td>
             </tr>
