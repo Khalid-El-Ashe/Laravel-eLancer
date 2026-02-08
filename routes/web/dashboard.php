@@ -3,6 +3,7 @@
 namespace Routes\Web;
 
 use App\Http\Controllers\Dashboard\CategoriesController;
+use App\Http\Controllers\Dashboard\ConfigController;
 use App\Http\Controllers\Dashboard\RolesController;
 use Illuminate\Support\Facades\Route;
 
@@ -58,4 +59,7 @@ Route::group([
         Route::put('/{role}', [RolesController::class, 'update'])->name('update');
         Route::delete('/{role}', [RolesController::class, 'destroy'])->name('destroy');
     });
+
+    Route::get('config', [ConfigController::class, 'index'])->name('config.index');
+    Route::post('config', [ConfigController::class, 'store'])->name('config.store');
 });

@@ -184,8 +184,10 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
+        'currency' => App\Facades\Currency::class
     ])->toArray(),
 
     'api_key' => env('API_KEY'),
 
+    'currency' => 'USD',
 ];

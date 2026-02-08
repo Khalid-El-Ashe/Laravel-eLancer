@@ -37,4 +37,9 @@ return [
         'sender' => env('NEPRAS_SENDER')
     ],
 
+    'thawani' => [
+        'secret' => env('THAWANI_SECRET_KEY'),
+        'publishable_key' => env('THAWANI_PUBLISHABLE_KEY'),
+        'mode' => 'test'
+    ],
 ];

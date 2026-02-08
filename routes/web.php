@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\PaymentsCallbackController;
+use App\Http\Controllers\PaymentsController;
 use App\Http\Controllers\ProjectsController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -19,13 +22,11 @@ use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 Route::group([
     'prefix' => LaravelLocalization::setLocale(),
-    'middleware' => ['localeSessionRedirect', 'localizationRedirect', 'localeViewPath']
+    // 'middleware' => ['localeSessionRedirect', 'localizationRedirect', 'localeViewPath']
 ], function () {
 
     // public
-    Route::get('/', function () {
-        return view('home');
-    });
+    Route::get('/', [HomeController::class, 'index'])->name('home');
 
     Route::get('projects/{project}', [ProjectsController::class, 'show'])->name('projects.show');
 
@@ -51,3 +52,7 @@ Route::group([
     require __DIR__ . '/web/freelancer.php';
     require __DIR__ . '/web/client.php';
 });
+
+Route::get('/payments/create', [PaymentsController::class, 'create'])->name('payments.create');
+Route::get('/payments/callback/success', [PaymentsCallbackController::class, 'success'])->name('paymentCallback.success');
+Route::get('/payments/callback/cancel', [PaymentsCallbackController::class, 'cancel'])->name('paymentCallback.cancel');
