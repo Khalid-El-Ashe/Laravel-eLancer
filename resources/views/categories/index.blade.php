@@ -39,7 +39,7 @@
                         @endcan
 
                         {{-- @if (Gate::allows('categories.delete'))--}}
-                        @can('destroy', $category)
+                        @can('delete', $category)
                         <form action="{{ route('categories.destroy', $category->id) }}" method="post">
                             @csrf
                             <!-- Form Method Spoofing -->

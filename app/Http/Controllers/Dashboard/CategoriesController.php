@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\CreateCategoryJob;
 use App\Models\Category;
 use App\Rules\FilterRule;
 use Illuminate\Http\Request;
@@ -108,22 +109,7 @@ class CategoriesController extends Controller
 
         // DB::table('categories')->create([]);
 
-        // $clean = $request->validate([
-        //     'name' => 'required|string|max:50',
-        //     'parent_id' => ['nullable', 'int', 'exists:categories,id'],
-        //     'description' => ['nullable', 'string'],
-        //     'art_path' => ['nullable', 'mimes:jpeg,jpg,png,gif,svg,webp']
-        // ]);
-        $clean = $request->validate($this->rules, $this->messages); // the message is a default value. not required
-        // $validator = Validator::make($request->all(), $rules, $messages);
-        // if ($validator->fails()) {
-        //     return redirect()->back()->withErrors($validator);
-        // }
-        // $category = new Category();
-        // $category->name = $request->input('name');
-        // $category->description = $request->input('description');
-        // $category->parent_id = $request->input('parent_id');
-        // $category->slug = Str::slug($category->name);
+        $request->validate($this->rules, $this->messages); // the message is a default value. not required
 
         // $category = Category::create([
         //     'name' => $request->input('name'),
@@ -132,26 +118,20 @@ class CategoriesController extends Controller
         //     'slug' => Str::slug($request->input('name')),
         // ]);
         $data = $request->all();
-        // dd($data);
 
         // if (!$data['slug']) {
         //     $data['slug'] = Str::slug($data['name']);
         // }
 
-        $category = Category::create($data);
+        // $category = Category::create($data);
+        dispatch(new CreateCategoryJob($data))->onQueue('import');
+
+
         // $category = Category::create($request->only('name', 'parent_id', 'slug'));
         // $category = Category::create($request->except('name', 'parent_id', 'slug'));
 
-        $category->save();
-
         //todo when the category is saved success (i need do the PRG: Post Redirect Get )
-        return redirect()->route('categories.index')->with('success', 'Category is Created')->setStatusCode(201);
-
-        // if ($validate) {
-        //     $category = Category::create($request);
-        //     $category->save();
-        // }
-        // return $request;
+        return redirect()->route('categories.index')->with('success', 'Category is being Created')->setStatusCode(201);
     }
     public function edit(Category $category)
     {
@@ -168,7 +148,6 @@ class CategoriesController extends Controller
     public function update(Request $request, Category $category)
     {
 
-
         // $clean = $request->validate([
         //     'name' => 'required|string|max:50',
         //     'parent_id' => ['nullable', 'int', 'exists:categories,id'],
@@ -183,14 +162,7 @@ class CategoriesController extends Controller
         #todo how to use the Policy?
         $this->authorize('update', $category);
 
-        $clean = $request->validate($this->rules, $this->messages); // the message is a default value. not required
-
-        // $category = Category::findOrFail($category->id);
-        // $category->name = $request->input('name');
-        // $category->description = $request->input('description');
-        // $category->parent_id = $request->input('parent_id');
-        // $category->slug = Str::slug($category->name);
-        // $category->save();
+        $request->validate($this->rules, $this->messages); // the message is a default value. not required
 
         $category->update($request->all());
 
@@ -204,7 +176,7 @@ class CategoriesController extends Controller
 
         $category = Category::findOrFail($id);
         #todo how to use the Policy?
-        $this->authorize('destroy', $category);
+        $this->authorize('delete', $category);
 
         $category->destroy($category);
         // session()->flash('success', 'Category is Deleted');

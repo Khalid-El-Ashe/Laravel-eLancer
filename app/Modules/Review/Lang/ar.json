@@ -1,0 +1,19 @@
+{
+    "Reviews List": "قائمة المراجعات",
+    "Create Review": "إنشاء مراجعة",
+    "Title": "العنوان",
+    "Rating": "التقييم",
+    "Comment": "التعليق",
+    "Submit": "إرسال",
+    "Review created successfully.": "تم إنشاء المراجعة بنجاح.",
+    "Review updated successfully.": "تم تحديث المراجعة بنجاح.",
+    "Review deleted successfully.": "تم حذف المراجعة بنجاح.",
+    "Review not found.": "المراجعة غير موجودة.",
+    "Pending": "قيد الانتظار",
+    "Approved": "موافق عليه",
+    "Rejected": "مرفوض",
+    "Submit your review": "قدم مراجعتك",
+    "Your review is pending approval.": "مراجعتك قيد الانتظار للموافقة.",
+    "Your review has been approved.": "تمت الموافقة على مراجعتك.",
+    "Your review has been rejected.": "تم رفض مراجعتك."
+}

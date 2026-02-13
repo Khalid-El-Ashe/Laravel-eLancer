@@ -1,5 +1,6 @@
 <?php
 
+use App\Modules\Review\Providers\ReviewServiceProvider;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\ServiceProvider;
 
@@ -159,6 +160,8 @@ return [
         /*
          * Package Service Providers...
          */
+        ReviewServiceProvider::class,
+
 
         /*
          * Application Service Providers...

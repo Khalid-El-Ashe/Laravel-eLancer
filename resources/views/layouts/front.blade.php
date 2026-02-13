@@ -143,7 +143,8 @@
                                 <li>
                                     <a href="#" class="current">Language</a>
                                     <ul class="dropdown-nav">
-                                        @foreach(LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
+                                        @foreach(LaravelLocalization::getSupportedLocales() as $localeCode =>
+                                        $properties)
                                         <li>
                                             <a rel="alternate" hreflang="{{ $localeCode }}"
                                                 href="{{ LaravelLocalization::getLocalizedURL($localeCode, null, [], true) }}">
